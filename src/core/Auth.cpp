@@ -44,8 +44,14 @@ int conv(int num_msg, const struct pam_message** msg, struct pam_response** resp
                 pamReply[i].resp = strdup(CONVERSATIONSTATE->input.c_str());
                 initialPrompt    = false;
             } break;
-            case PAM_ERROR_MSG: Debug::log(ERR, "PAM: {}", msg[i]->msg); break;
-            case PAM_TEXT_INFO: Debug::log(LOG, "PAM: {}", msg[i]->msg); break;
+            case PAM_ERROR_MSG: {
+                CONVERSATIONSTATE->info = std::string(msg[i]->msg);
+                Debug::log(ERR, "PAM: {}", msg[i]->msg);
+            } break;
+            case PAM_TEXT_INFO: {
+                CONVERSATIONSTATE->info = std::string(msg[i]->msg);
+                Debug::log(LOG, "PAM: {}", msg[i]->msg);
+            } break;
         }
     }
 
@@ -148,6 +154,10 @@ std::optional<std::string> CAuth::getLastFailText() {
 
 std::optional<std::string> CAuth::getLastPrompt() {
     return m_sConversationState.prompt.empty() ? std::nullopt : std::optional(m_sConversationState.prompt);
+}
+
+std::optional<std::string> CAuth::getLastInfo() {
+    return m_sConversationState.info.empty() ? std::nullopt : std::optional(m_sConversationState.info);
 }
 
 bool CAuth::checkWaiting() {

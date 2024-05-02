@@ -12,6 +12,7 @@ class CAuth {
         std::string             input    = "";
         std::string             prompt   = "";
         std::string             failText = "";
+        std::string             info     = "";
 
         std::mutex              inputMutex;
         std::condition_variable inputSubmittedCondition;
@@ -33,6 +34,7 @@ class CAuth {
 
     std::optional<std::string> getLastFailText();
     std::optional<std::string> getLastPrompt();
+    std::optional<std::string> getLastInfo();
 
     bool                       checkWaiting();
 
