@@ -2,6 +2,7 @@
 #include "../../helpers/Log.hpp"
 #include "../../helpers/VarList.hpp"
 #include "../../core/hyprlock.hpp"
+#include "src/core/Auth.hpp"
 #include <chrono>
 #include <unistd.h>
 #include <pwd.h>
@@ -149,6 +150,12 @@ IWidget::SFormatResult IWidget::formatString(std::string in) {
 
     if (in.contains("$LAYOUT")) {
         replaceAllLayout(in);
+        result.allowForceUpdate = true;
+    }
+
+    if (in.contains("$PAM_INFO")) {
+        const auto INFO = g_pAuth->getLastInfo();
+        replaceAll(in, "$PAM_INFO", INFO.has_value() ? INFO.value() : "");
         result.allowForceUpdate = true;
     }
 
